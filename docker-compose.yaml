@@ -1,0 +1,38 @@
+services:
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: ${WP_USER}
+      WORDPRESS_DB_PASSWORD: ${WP_PASSWORD}
+      WORDPRESS_DB_NAME: wordpress_dev
+    volumes:
+      - wordpress:/var/www/html
+
+  mysql:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress_dev
+      MYSQL_USER: ${WP_USER}
+      MYSQL_PASSWORD: ${WP_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${WP_PASSWORD}
+    volumes:
+      - mysql:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: ${WP_USER}
+      PMA_PASSWORD: ${WP_PASSWORD}
+      UPLOAD_LIMIT: 128M
+    ports:
+      - "8080:80"
+volumes:
+  wordpress:
+  mysql:
